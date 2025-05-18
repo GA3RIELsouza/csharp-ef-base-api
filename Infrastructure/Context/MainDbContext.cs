@@ -25,36 +25,36 @@ namespace Base_API.Infrastructure.Context
 
         public async Task ExecuteInTrasactionAsync(Action query)
         {
+            using var transaction = await Database.BeginTransactionAsync();
+
             try
             {
-                await Database.BeginTransactionAsync();
-
                 query();
 
                 await SaveChangesAsync();
-                await Database.CommitTransactionAsync();
+                await transaction.CommitAsync();
             }
             catch (Exception)
             {
-                await Database.RollbackTransactionAsync();
+                await transaction.RollbackAsync();
                 throw;
             }
         }
 
         public async Task ExecuteInTrasactionAsync(Func<Task> query)
         {
+            using var transaction = await Database.BeginTransactionAsync();
+
             try
             {
-                await Database.BeginTransactionAsync();
-
                 await query();
 
                 await SaveChangesAsync();
-                await Database.CommitTransactionAsync();
+                await transaction.CommitAsync();
             }
             catch (Exception)
             {
-                await Database.RollbackTransactionAsync();
+                await transaction.RollbackAsync();
                 throw;
             }
         }
