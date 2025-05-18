@@ -26,7 +26,7 @@ namespace Base_API.Services
 
             user.UpdateFromDto(dto);
 
-            _db.ExecuteInTrasaction(() =>
+            await _db.ExecuteInTrasactionAsync(() =>
             {
                 _userRepository.Update(user);
             });
@@ -50,7 +50,7 @@ namespace Base_API.Services
                 throw new BusinessException("You cannot delete your own user.", HttpStatusCode.Forbidden);
             }
 
-            _db.ExecuteInTrasaction(() =>
+            await _db.ExecuteInTrasactionAsync(() =>
             {
                 _userRepository.Remove(user);
             });

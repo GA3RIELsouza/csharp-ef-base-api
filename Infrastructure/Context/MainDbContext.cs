@@ -23,20 +23,20 @@ namespace Base_API.Infrastructure.Context
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         }
 
-        public void ExecuteInTrasaction(Action query)
+        public async Task ExecuteInTrasactionAsync(Action query)
         {
             try
             {
-                Database.BeginTransaction();
+                await Database.BeginTransactionAsync();
 
                 query();
 
-                SaveChanges();
-                Database.CommitTransaction();
+                await SaveChangesAsync();
+                await Database.CommitTransactionAsync();
             }
             catch (Exception)
             {
-                Database.RollbackTransaction();
+                await Database.RollbackTransactionAsync();
                 throw;
             }
         }
